@@ -1,0 +1,118 @@
+<header class="cabeca">
+  <h2>Eventos e participantes</h2>
+  <p>Cadastre um evento e gerencie os participantes vinculados a ele.</p>
+</header>
+
+@if (mensagemErro) {
+  <p class="aviso erro" role="alert">{{ mensagemErro }}</p>
+}
+
+<section class="painel">
+  <h3>Cadastrar evento</h3>
+  <form class="formulario evento-form" (ngSubmit)="cadastrarEvento()" #formEvento="ngForm">
+    <div class="campo">
+      <label for="nomeEvento">Nome do evento</label>
+      <input id="nomeEvento" name="nomeEvento" type="text" required
+             [(ngModel)]="rascunhoEvento.nome">
+    </div>
+    <div class="campo">
+      <label for="dataEvento">Data</label>
+      <input id="dataEvento" name="dataEvento" type="date" required
+             [(ngModel)]="rascunhoEvento.data">
+    </div>
+    <div class="campo">
+      <label for="localEvento">Local</label>
+      <input id="localEvento" name="localEvento" type="text" required
+             [(ngModel)]="rascunhoEvento.local">
+    </div>
+    <button type="submit" [disabled]="formEvento.invalid">Cadastrar evento</button>
+  </form>
+</section>
+
+<section class="painel">
+  <h3>Eventos cadastrados <span class="contador">{{ eventos.length }}</span></h3>
+  @if (eventos.length === 0) {
+    <p class="vazio">Cadastre o primeiro evento para adicionar participantes.</p>
+  } @else {
+    <div class="lista-eventos">
+      @for (evento of eventos; track evento.id) {
+        <button class="evento-item" type="button"
+                [class.selecionado]="eventoSelecionadoId === evento.id"
+                (click)="selecionarEvento(evento.id)">
+          <strong>{{ evento.nome }}</strong>
+          <span>{{ evento.data }} · {{ evento.local }}</span>
+        </button>
+      }
+    </div>
+  }
+</section>
+
+@if (eventoSelecionado; as evento) {
+  <section class="painel">
+    <div class="titulo-secao">
+      <div>
+        <h3>Participantes</h3>
+        <p>{{ evento.nome }} · {{ evento.data }} · {{ evento.local }}</p>
+      </div>
+      <span class="contador">{{ participantes.length }}</span>
+    </div>
+
+    <form class="formulario" (ngSubmit)="salvarParticipante()" #formParticipante="ngForm">
+      <h4>{{ participanteEmEdicaoId === null ? 'Adicionar participante' : 'Editar participante' }}</h4>
+      <div class="campo">
+        <label for="descricaoParticipante">Descrição</label>
+        <input id="descricaoParticipante" name="descricaoParticipante" type="text" required
+               [(ngModel)]="rascunhoParticipante.descricao">
+      </div>
+      <div class="campo">
+        <label for="emailParticipante">E-mail</label>
+        <input id="emailParticipante" name="emailParticipante" type="email" required
+               [(ngModel)]="rascunhoParticipante.email">
+      </div>
+      <div class="campo">
+        <label for="telefoneParticipante">Telefone</label>
+        <input id="telefoneParticipante" name="telefoneParticipante" type="tel" required
+               [(ngModel)]="rascunhoParticipante.telefone">
+      </div>
+      <div class="campo">
+        <label for="pagamentoParticipante">Forma de pagamento</label>
+        <select id="pagamentoParticipante" name="pagamentoParticipante" required
+                [(ngModel)]="rascunhoParticipante.formaPagamento">
+          @for (forma of formasDePagamento; track forma.valor) {
+            <option [value]="forma.valor">{{ forma.rotulo }}</option>
+          }
+        </select>
+      </div>
+      <div class="acoes">
+        <button type="submit" [disabled]="formParticipante.invalid">
+          {{ participanteEmEdicaoId === null ? 'Adicionar participante' : 'Salvar alterações' }}
+        </button>
+        @if (participanteEmEdicaoId !== null) {
+          <button class="secundario" type="button" (click)="cancelarEdicao()">Cancelar</button>
+        }
+      </div>
+    </form>
+
+    <div class="lista-participantes">
+      @for (participante of participantes; track participante.id) {
+        <article class="participante">
+          <div>
+            <h4>{{ participante.descricao }}</h4>
+            <p>{{ participante.email }} · {{ participante.telefone }}</p>
+            <small>Pagamento: {{ participante.formaPagamento }}</small>
+          </div>
+          <div class="acoes">
+            <button class="secundario" type="button" (click)="editarParticipante(participante)">
+              Editar
+            </button>
+            <button class="perigo" type="button" (click)="excluirParticipante(participante.id)">
+              Excluir
+            </button>
+          </div>
+        </article>
+      } @empty {
+        <p class="vazio">Este evento ainda não possui participantes.</p>
+      }
+    </div>
+  </section>
+}

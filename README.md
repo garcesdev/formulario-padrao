@@ -240,3 +240,17 @@ padrao/
 > rigoroso com `null`, `undefined` e tipos implícitos, e é a origem de boa parte
 > dos sublinhados vermelhos. **Não desligue.** Os erros não somem quando você o
 > desliga — eles só deixam de ser avisados, e voltam em tempo de execução.
+
+---
+
+## Eventos e participantes
+
+A opção **Eventos** no menu permite cadastrar eventos e, em seguida, selecionar
+um deles para adicionar, consultar, editar ou excluir participantes. Cada
+participante guarda o identificador do evento ao qual pertence, e os dados
+ficam salvos no `localStorage` do navegador para continuar disponíveis após
+recarregar a página.
+
+Os campos obrigatórios do participante são descrição, e-mail, telefone e forma
+de pagamento. Como o armazenamento é local ao navegador, os cadastros não são
+compartilhados entre dispositivos ou usuários.
